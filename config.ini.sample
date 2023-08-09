@@ -3,3 +3,6 @@ key=공공데이터포털KEY
 
 [WORD_CHAIN]
 key=우리말샘KEY
+
+[NAVER_SEARCH]
+path=C:\tools\Webdriver\chromedriver-win64\chromedriver.exe

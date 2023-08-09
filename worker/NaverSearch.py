@@ -1,3 +1,4 @@
+import configparser
 import time
 
 from selenium import webdriver
@@ -10,8 +11,11 @@ from worker.Worker import Worker
 
 class NaverSearch(Worker):
     def __init__(self):
+        config = configparser.ConfigParser()
+        config.read('config.ini')
+        path = config['NAVER_SEARCH']['path']
         self._driver = webdriver.Chrome(
-            service=Service(executable_path=r'C:\tools\Webdriver\chromedriver-win64\chromedriver.exe')
+            service=Service(executable_path=r"{}".format(path))
         )
 
     def work(self, text, voice=None):
