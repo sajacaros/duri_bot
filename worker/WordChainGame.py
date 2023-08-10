@@ -23,13 +23,20 @@ class WordChainGame(Worker):
     def work(self, _=None, voice=None):
         print_and_tts('게임을 시작합니다.')
         r_word = None
+        threshold_count = 0
         while True:
             print_and_tts('단어를 입력하세요.')
             word = voice()
             try:
                 if not self.check_word(word):
-                    print_and_tts(f"{word} 단어가 존재하지 않습니다. 당신은 패배하셨습니다.")
-                    break
+                    print_and_tts(f"{word} 단어가 존재하지 않습니다.")
+                    if threshold_count > 1:  # 3번째는 패배
+                        print_and_tts('존재하지 않는 단어를 3회 말하셨습니다. 당신은 패배하셨습니다.')
+                        break
+                    threshold_count += 1
+                    continue
+                else:
+                    threshold_count = 0
                 if r_word and r_word[-1] != word[0]:
                     print_and_tts(f"{r_word}의 끝 단어와 {word} 단어의 첫 단어가 같지 않습니다. 당신은 패배하셨습니다.")
                     break
@@ -61,7 +68,9 @@ class WordChainGame(Worker):
             'letter_s': 2,  # 음절수 시작
             'letter_e': 4
         }
+
         res = requests.get(url, params)
+
         if res.status_code == 200:
             return json.loads(res.text)
         else:
@@ -74,7 +83,11 @@ class WordChainGame(Worker):
         return self.search_word(text)['channel']['total'] > 0
 
     def recommend_word(self, start_word):
-        words = self.search_word(start_word, 'start')
+        try:
+            words = self.search_word(start_word, 'start')
+        except ConnectionError:
+            print_and_tts('서버와의 통신의 원할하지 않습니다. 다시 입력해 주세요.')
+            return None
         if words['channel']['total'] == 0:
             return None
         current_num = words['channel']['num']
