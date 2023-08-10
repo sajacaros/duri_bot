@@ -1,7 +1,6 @@
 from speech_recognition import WaitTimeoutError
-
-from Speak import print_and_tts
-from Input import voice_input
+from communication.Speak import print_and_tts
+from communication.Input import voice_input
 from worker.FineDust import FineDust
 from worker.NaverSearch import NaverSearch
 from worker.Whether import Whether

@@ -5,7 +5,7 @@ from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
 
-from Speak import print_and_tts
+from communication.Speak import print_and_tts
 from worker.Worker import Worker
 
 

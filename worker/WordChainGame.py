@@ -1,12 +1,11 @@
 import configparser
 import json
-import pprint
 import random
 import re
 
 import requests
 
-from Speak import print_and_tts
+from communication.Speak import print_and_tts
 from worker.Worker import Worker
 
 

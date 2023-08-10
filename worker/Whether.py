@@ -2,7 +2,7 @@ import json
 
 import requests
 
-from Speak import print_and_tts
+from communication.Speak import print_and_tts
 from worker.Worker import Worker
 
 

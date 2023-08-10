@@ -1,7 +1,7 @@
 import speech_recognition as sr
 from speech_recognition import UnknownValueError, RequestError, WaitTimeoutError
 
-from Speak import print_and_tts
+from communication.Speak import print_and_tts
 
 
 def voice_input():
