@@ -12,22 +12,24 @@ naver_search = NaverSearch()
 fine_dust = FineDust()
 word_chain = WordChainGame()
 
+action_phrase = {
+    '검색': naver_search,
+    '날씨': whether,
+    '먼지': fine_dust,
+    '게임': word_chain,
+}
+
 
 def duri_utility(voice):
     print_and_tts('검색 및 게임 기능을 활성화 합니다.')
     text = None
     while not text:
         text = voice()
-    if text[-2:] == '검색':
-        naver_search.work(text[0:-2].strip())
-    elif text[-2:] == '날씨':
-        whether.work(text[0:-2].strip())
-    elif text[-4:] == '미세먼지':
-        fine_dust.work(text[0:-4].strip())
-    elif text[-2:] == '게임':
-        word_chain.work(voice=voice)
+    worker = action_phrase[text[-2:]]
+    if worker:
+        worker.work(text[:2].strip() if text[:2] is not None else None, voice)
     else:
-        print_and_tts(f'{text}는 지원하지 않는 기능입니다.')
+        print_and_tts(f'{text[-2:]}는 지원하지 않는 기능입니다.')
 
     print_and_tts('검색 및 게임 기능을 종료합니다.')
 
