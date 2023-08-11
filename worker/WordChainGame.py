@@ -14,35 +14,36 @@ def extract_korean(word):
 
 
 class WordChainGame(Worker):
-    def __init__(self):
+    def __init__(self, threshold_count=3):
         config = configparser.ConfigParser()
         config.read('config.ini')
         self._key = config['WORD_CHAIN']['key']
+        self._threshold_count = threshold_count
 
     def work(self, _=None, voice=None):
         print_and_tts('게임을 시작합니다.')
         r_word = None
-        threshold_count = 0
+        fail_count = 0
         while True:
             print_and_tts('단어를 입력하세요.')
             word = voice()
             try:
                 if not self.check_word(word):
                     print_and_tts(f"{word} 단어가 존재하지 않습니다.")
-                    if threshold_count > 1:  # 3번째는 패배
+                    if fail_count >= self._threshold_count-1:  # 3번째는 패배
                         print_and_tts('존재하지 않는 단어를 3회 말하셨습니다. 당신은 패배하셨습니다.')
                         break
-                    threshold_count += 1
+                    fail_count += 1
                     continue
                 else:
-                    threshold_count = 0
+                    fail_count = 0
                 if r_word and r_word[-1] != word[0]:
                     print_and_tts(f"{r_word}의 끝 단어와 {word} 단어의 첫 단어가 같지 않습니다. 당신은 패배하셨습니다.")
                     break
             except AssertionError:
                 print_and_tts('단어의 길이가 짧습니다. 2단어 이상 입력하세요.')
                 continue
-            except ConnectionError:
+            except ConnectionError | requests.exceptions.ConnectionError:
                 print_and_tts('서버와의 연결이 원할하지 않습니다.')
                 break
             r_word = self.recommend_word(word[-1])
